@@ -1,15 +1,15 @@
 {
-    "name": "hiqdev/yii2-combo2",
+    "name": "hiqdev/yii2-combo",
     "type": "yii2-extension",
-    "description": "Combo2 Widget for Yii 2",
-    "keywords": ["combo2","widget","yii2","extension"],
-    "homepage": "https://hiqdev.com/yii2-combo2",
+    "description": "Combo Widget for Yii 2",
+    "keywords": ["combo","widget","yii2","extension","select2"],
+    "homepage": "https://hiqdev.com/yii2-combo",
     "license": "BSD-3-clause",
     "support": {
         "email":  "support@hiqdev.com",
-        "source": "https://github.com/hiqdev/yii2-combo2",
-        "issues": "https://github.com/hiqdev/yii2-combo2/issues",
-        "wiki":   "https://github.com/hiqdev/yii2-combo2/wiki",
+        "source": "https://github.com/hiqdev/yii2-combo",
+        "issues": "https://github.com/hiqdev/yii2-combo/issues",
+        "wiki":   "https://github.com/hiqdev/yii2-combo/wiki",
         "forum":  "https://forum.hiqdev.com/yii2"
     },
     "authors": [
@@ -43,7 +43,7 @@
     },
     "autoload": {
         "psr-4": {
-            "hiqdev\\combo2\\": ""
+            "hiqdev\\combo\\": ""
         }
     }
 }

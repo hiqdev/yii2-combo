@@ -1,4 +1,4 @@
-hiqdev/yii2-combo2 changelog
+hiqdev/yii2-combo changelog
 ----------------------------
 
 ### CURRENT TODO

@@ -39,10 +39,9 @@
 			var field = $.fn.comboConfig().get({
 				'id': id,
 				'form': this,
-				'select2Options': options
+				'select2Options': options,
+				'element': element
 			});
-			element.data('field', field);
-			field.setElement(element).attachListeners();
 			this.fields.push({
 				id: id,
 				type: field.type,
@@ -274,7 +273,7 @@
 			if (!options.id && options.type) {
 				options.id = this.findByType(options.type);
 			}
-			return new Field(this.fields[options.id]).configure(options);
+			return new Field(this.fields[options.id]).configure(options).init();
 		},
 		/**
 		 * Checks whether the requested config type is registered
@@ -303,8 +302,8 @@
 		this.name = null;
 		this.type = null;
 		this.form = null;
-		this.element = null;
 		this.config = null;
+		this.element = null;
 		this.activeWhen = null;
 		/**
 		 * The array of fields, cleaning of which makes this field cleared too.
@@ -428,26 +427,10 @@
 					text = value[0];
 					callback_trigger({id: text, text: text});
 				}
-			},
-			onChange: function (e) {
-				e.element = $(this);
-				if (e.noAffect) {
-					e.stopPropagation();
-				}
-
-				return $(this).data('field').form.update(e);
-			},
-			'onSelect2-selecting': function (event) {
-				var field = $(event.target).data('field');
-				var data = event.object;
-				if (field.getPk()) {
-					data.id = data[field.getPk()];
-				} else {
-					data.id = data.text;
-				}
 			}
 		};
 
+		/// Ajax defaults
 		if (config.select2Options.ajax) {
 			this.select2Options['ajax'] = {
 				dataType: 'json',
@@ -462,13 +445,42 @@
 			}
 		}
 
-		this.events = {};
+		this.events = {
+			'change': [
+				function (e) {
+					e.element = $(this);
+					if (e.noAffect) {
+						e.stopPropagation();
+					}
+					return $(this).data('field').form.update(e);
+				}
+			],
+			'select2-selecting': [
+				function (event) {
+					var field = $(event.target).data('field');
+					var data = event.object;
+					if (field.getPk()) {
+						data.id = data[field.getPk()];
+					} else {
+						data.id = data.text;
+					}
+				}
+			]
+		};
 		this.configure(config);
-		this.init();
 	}
 
 	Field.prototype = {
 		init: function () {
+			var self = this;
+			this.element.data('field', this);
+			this.element.select2(this.getSelect2Options());
+
+			$.each(this.events, function (event, handlers) {
+				$.each(handlers, function (k, handler) {
+					self.attachListener(event, handler);
+				});
+			});
 			return this;
 		},
 		/**
@@ -555,41 +567,39 @@
 			return filters;
 		},
 		configure: function (config) {
-			var field = this;
+			var self = this;
 			$.each(config, function (k, v) {
-				if (field[k] !== undefined) {
-					if (typeof field[k] == 'object' && v.noextend === undefined && field[k] !== null) {
-						$.extend(true, field[k], v);
+				if (self[k] !== undefined) {
+					if (typeof self[k] == 'object' && v.noextend === undefined && self[k] !== null) {
+						$.extend(true, self[k], v);
 					} else {
-						field[k] = v;
+						self[k] = v;
 					}
 				} else if (k.substr(0, 2) == 'on') {
-					field.events[k.substr(2)] = v;
+					var eventName = k.substr(2,1).toLowerCase() + k.substr(3);
+					if (typeof v !== 'array') {
+						v = [v];
+					}
+					$.each(v, function (k, handler) {
+						if (!self.events[eventName]) self.events[eventName] = [];
+						self.events[eventName].push(handler);
+					});
 				} else {
 					throw "Trying to set unknown property " + k;
 				}
 			});
 			return this;
 		},
-		setElement: function (element) {
-			this.element = element;
-			element.select2(this.getConfig());
-			return this;
-		},
-		attachListeners: function () {
+		attachListener: function (event, handler) {
 			var element = this.element;
-			$.each(this.getConfig(), function (k, v) {
-				if (k.substr(0, 2) == 'on') {
-					element.on(k.substr(2).toLowerCase(), v);
-				}
-			});
+			element.on(event, handler);
 			return this;
 		},
 		/**
 		 * Returns the Select2 plugin options for the type
 		 * @returns {object} the Select2 plugin options for the type
 		 */
-		getConfig: function () {
+		getSelect2Options: function () {
 			return this.select2Options;
 		},
 		getName: function () {
@@ -620,8 +630,11 @@
 		getValue: function () {
 			return this.element.select2('val');
 		},
-		trigger: function (name, e) {
-			return $.isFunction(this.events[name]) ? this.events[name](e) : true;
+		trigger: function (type, event) {
+			event.type = type;
+			event.element = this.element;
+
+			return this.element.trigger(event);
 		},
 		disable: function () {
 			return this.element.select2('enable', false);

@@ -155,7 +155,10 @@ class Combo extends Widget
     public $_hasId;
 
     /**
+     * Options that will be passed to the plugin
+     *
      * @var array
+     * @see getPluginOptions()
      */
     public $_pluginOptions = [];
 

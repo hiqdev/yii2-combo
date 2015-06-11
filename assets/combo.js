@@ -474,13 +474,13 @@
 		init: function () {
 			var self = this;
 			this.element.data('field', this);
-			this.element.select2(this.getSelect2Options());
-
 			$.each(this.events, function (event, handlers) {
 				$.each(handlers, function (k, handler) {
 					self.attachListener(event, handler);
 				});
 			});
+			this.element.select2(this.getSelect2Options());
+
 			return this;
 		},
 		/**

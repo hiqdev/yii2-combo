@@ -74,7 +74,7 @@ class Combo extends Widget
     /**
      * @var array the HTML options for the input element
      */
-    public $inputOptions;
+    public $inputOptions = [];
 
     /**
      * @var string the outer element selector, that holds all of related Combos

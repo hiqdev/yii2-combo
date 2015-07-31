@@ -14,7 +14,7 @@ namespace hiqdev\combo;
  */
 class ComboAsset extends \yii\web\AssetBundle
 {
-    public $sourcePath = '@vendor/hiqdev/yii2-combo';
+    public $sourcePath = '@vendor/hiqdev/yii2-combo/src';
 
     public $js = [
         'assets/combo.js'

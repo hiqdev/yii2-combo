@@ -177,6 +177,9 @@ class Combo extends Widget
         if (!$this->rename) {
             $this->rename = ['text' => $this->type];
         }
+        if (!$this->inputOptions['id']) {
+            $this->inputOptions['id'] = Html::getInputId($this->model, $this->attribute) . '-' . $this->id ;
+        }
     }
 
     public function run()
@@ -194,7 +197,7 @@ class Combo extends Widget
         $this->configId = md5($this->type . $pluginOptions);
         $view->registerJs("$.fn.comboConfig().add('{$this->configId}', $pluginOptions);", View::POS_READY, 'combo_' . $this->configId);
 
-        $selector = $this->inputOptions['id'] ?: Html::getInputId($this->model, $this->attribute);
+        $selector = $this->inputOptions['id'];
         $js       = "$('#$selector').closest('{$this->formElementSelector}').combo().register('#$selector', '$this->configId');";
 
         $view->registerJs($js);

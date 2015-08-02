@@ -86,7 +86,6 @@ class Combo extends Widget
      */
     public $language;
 
-
     /**
      * @var mixed returning arguments
      * Example:
@@ -297,6 +296,10 @@ class Combo extends Widget
                 ]
             ]
         ], $this->_pluginOptions, $options);
+    }
+
+    public function getFormIsBulk() {
+        return preg_match("/^\[.*\].+$/", $this->attribute);
     }
 
     /**

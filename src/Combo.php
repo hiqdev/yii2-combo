@@ -136,7 +136,7 @@ class Combo extends Widget
      * @see setFilter()
      * @see getFilter()
      */
-    protected $_filter;
+    protected $_filter = [];
 
     /**
      * @var string the name of the primary filter. Default: [[type]]_like.

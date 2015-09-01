@@ -274,7 +274,7 @@ class Combo extends Widget
     public function getPluginOptions($options = [])
     {
         return ArrayHelper::merge([
-            'name'           => $this->type,
+            'name'           => $this->name,
             'type'           => $this->type,
             'hasId'          => $this->hasId,
             'select2Options' => [

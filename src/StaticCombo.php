@@ -11,6 +11,8 @@ use yii\helpers\ArrayHelper;
  */
 class StaticCombo extends Combo
 {
+    public $name = 'default';
+
     public $type = 'default';
 
     public $_data = [];

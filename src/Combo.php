@@ -183,22 +183,26 @@ class Combo extends Widget
 
     public function run()
     {
+        $this->registerClientConfig();
         $this->registerClientScript();
         return Html::activeTextInput($this->model, $this->attribute, $this->inputOptions);
     }
 
-    public function registerClientScript()
+    public function registerClientConfig()
     {
-        $view = \Yii::$app->getView();
+        $view = Yii::$app->getView();
         ComboAsset::register($view);
 
         $pluginOptions  = Json::encode($this->pluginOptions);
         $this->configId = md5($this->type . $pluginOptions);
         $view->registerJs("$.fn.comboConfig().add('{$this->configId}', $pluginOptions);", View::POS_READY, 'combo_' . $this->configId);
+    }
 
+    public function registerClientScript() {
         $selector = $this->inputOptions['id'];
         $js       = "$('#$selector').closest('{$this->formElementSelector}').combo().register('#$selector', '$this->configId');";
 
+        $view = Yii::$app->getView();
         $view->registerJs($js);
     }
 
@@ -279,7 +283,7 @@ class Combo extends Widget
             'hasId'          => $this->hasId,
             'select2Options' => [
                 'width'       => '100%',
-                'placeholder' => \Yii::t('app', 'Start typing here'),
+                'placeholder' => Yii::t('app', 'Start typing here'),
                 'ajax'        => [
                     'url'    => Url::toRoute($this->url),
                     'type'   => 'post',

@@ -423,6 +423,12 @@
 							}
 						}
 					});
+				} else if (isMultiple) {
+					var results = [];
+					$.each(value, function (k, v) {
+						results.push({id: field.hasId ? k : v, text: v});
+					});
+					callback_trigger(results);
 				} else {
 					text = value[0];
 					callback_trigger({id: text, text: text});

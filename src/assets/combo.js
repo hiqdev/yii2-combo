@@ -377,7 +377,7 @@
 					text = element.data('init-text');
 					element.removeData('init-text');
 					callback_trigger({id: value[0], text: text});
-				} else if (field.hasId) {
+				} else if (!isMultiple && field.hasId) {
 					var requestData = {};
 					if (isMultiple) {
 						requestData[field.getPk() + '_in'] = {format: value};

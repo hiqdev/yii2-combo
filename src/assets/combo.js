@@ -91,6 +91,9 @@
 		isEnabled: function (type) {
 			return this.getField(type).isEnabled();
 		},
+		isReadonly: function (type) {
+			return this.getField(type).isReadonly();
+		},
 		clear: function (type) {
 			return this.getField(type).clear();
 		},
@@ -193,7 +196,7 @@
 					needsClear = needsClear || field.clearWhen.indexOf(element.data('field').type) >= 0;
 				}
 
-				if (isActive != _this.isEnabled(field.type)) {
+				if (isActive != _this.isEnabled(field.type) && !_this.isReadonly(field.type)) {
 					reUpdate = true;
 				}
 				if (needsClear && !_this.isEmpty(field.type)) {
@@ -650,6 +653,9 @@
 		},
 		isEnabled: function () {
 			return this.element.data('select2').isInterfaceEnabled();
+		},
+		isReadonly: function () {
+			return this.element.attr('readonly');
 		},
 		clear: function () {
 			return this.setValue('');

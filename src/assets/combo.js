@@ -523,6 +523,11 @@
 	     *              return field.form.getValue('someOtherField') == '1';
 	     *          }
 	     *      },
+	     *      'filter_related_non-combo_field': {
+	     *          format: function (field) {
+	     *              return field.element.closest('.form').find('input[data-rel="login"]').val();
+	     *          }
+	     *      },
 	     *      'someStaticValue': {
 	     *          format: 'test'
 	     *      },
@@ -535,6 +540,7 @@
 		createFilter: function (fields) {
 			var form = this.form;
 			var filters = {};
+			var _this = this;
 
 			if (!fields.return) fields['return'] = this.select2Options.ajax.return;
 			if (!fields.rename) fields['rename'] = this.select2Options.ajax.rename;
@@ -566,12 +572,15 @@
 					};
 				}
 
-				var field = form.getField(v.field);
-				if ($.isEmptyObject(field)) return true;
-				var data = field.getData();
-				if (!data) return true;
-
-				filters[k] = v.format(data['id'], data['text'], field);
+				if (v.field) {
+					var field = form.getField(v.field);
+					if ($.isEmptyObject(field)) return true;
+					var data = field.getData();
+					if (!data) return true;
+					filters[k] = v.format(data['id'], data['text'], field);
+				} else {
+					filters[k] = v.format(_this);
+				}
 			});
 			return filters;
 		},

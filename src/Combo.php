@@ -283,7 +283,7 @@ class Combo extends Widget
             'hasId'          => $this->hasId,
             'select2Options' => [
                 'width'       => '100%',
-                'placeholder' => Yii::t('app', 'Start typing here'),
+                'placeholder' => Yii::t('app', '---'),
                 'ajax'        => [
                     'url'    => Url::toRoute($this->url),
                     'type'   => 'post',

@@ -177,7 +177,7 @@ class Combo extends Widget
             $this->rename = ['text' => $this->name];
         }
         if (!$this->inputOptions['id']) {
-            $this->inputOptions['id'] = Html::getInputId($this->model, $this->attribute) . '-' . $this->id ;
+            $this->inputOptions['id'] = Html::getInputId($this->model, $this->attribute) . '-' . $this->id;
         }
         if (!$this->inputOptions['data-combo-field']) {
             $this->inputOptions['data-combo-field'] = $this->name;
@@ -196,14 +196,16 @@ class Combo extends Widget
         $view = Yii::$app->getView();
         ComboAsset::register($view);
 
-        $pluginOptions  = Json::encode($this->pluginOptions);
+        $pluginOptions = Json::encode($this->pluginOptions);
         $this->configId = md5($this->type . $pluginOptions);
-        $view->registerJs("$.fn.comboConfig().add('{$this->configId}', $pluginOptions);", View::POS_READY, 'combo_' . $this->configId);
+        $view->registerJs("$.fn.comboConfig().add('{$this->configId}', $pluginOptions);", View::POS_READY,
+            'combo_' . $this->configId);
     }
 
-    public function registerClientScript() {
+    public function registerClientScript()
+    {
         $selector = $this->inputOptions['id'];
-        $js       = "$('#$selector').closest('{$this->formElementSelector}').combo().register('#$selector', '$this->configId');";
+        $js = "$('#$selector').closest('{$this->formElementSelector}').combo().register('#$selector', '$this->configId');";
 
         $view = Yii::$app->getView();
         $view->registerJs($js);
@@ -281,19 +283,20 @@ class Combo extends Widget
     public function getPluginOptions($options = [])
     {
         return ArrayHelper::merge([
-            'name'           => $this->name,
-            'type'           => $this->type,
-            'hasId'          => $this->hasId,
+            'name' => $this->name,
+            'type' => $this->type,
+            'hasId' => $this->hasId,
             'select2Options' => [
                 'width'       => '100%',
                 'placeholder' => Yii::t('app', '----------'),
+                'minimumInputLength' => '0',
                 'ajax'        => [
                     'url'    => Url::toRoute($this->url),
                     'type'   => 'post',
                     'return' => $this->return,
                     'rename' => $this->rename,
                     'filter' => $this->filter,
-                    'data'   => new JsExpression("
+                    'data' => new JsExpression("
                         function (term) {
                             return $(this).data('field').createFilter({
                                 '{$this->primaryFilter}': {format: term}
@@ -305,7 +308,8 @@ class Combo extends Widget
         ], $this->_pluginOptions, $options);
     }
 
-    public function getFormIsBulk() {
+    public function getFormIsBulk()
+    {
         return preg_match("/^\[.*\].+$/", $this->attribute);
     }
 

@@ -127,6 +127,9 @@
 				}
 				if ($.isFunction(v)) {
 					isSet = v(self);
+					if (typeof(isSet) !== 'boolean') {
+						throw "Closure should return only boolean value!"
+					}
 				} else {
 					isSet = self.isSet(v) || (skipMissing && !self.hasField(v));
 				}

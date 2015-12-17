@@ -177,7 +177,7 @@ class Combo extends Widget
             $this->rename = ['text' => $this->name];
         }
         if (!$this->inputOptions['id']) {
-            $this->inputOptions['id'] = Html::getInputId($this->model, $this->attribute) . '-' . $this->id;
+            $this->inputOptions['id'] = Html::getInputId($this->model, $this->attribute);
         }
         if (!$this->inputOptions['data-combo-field']) {
             $this->inputOptions['data-combo-field'] = $this->name;

@@ -3,6 +3,10 @@ hiqdev/yii2-combo commits history
 
 ## Under development
 
+- Added basics
+    - 12d8367 2016-04-27 inited tests (sol@hiqdev.com)
+    - 7795c4b 2016-04-27 phpcsfixed (sol@hiqdev.com)
+    - fe661e1 2016-04-27 hideved (sol@hiqdev.com)
     - 40f9b28 2015-12-17 Change id setter (andreyklochok@gmail.com)
     - b6876ad 2015-11-13 JS: combo.areSet throw exception when custom callback returned not a boolean (d.naumenko.a@gmail.com)
     - 5b06973 2015-09-28 Minimum input length set to 0 (d.naumenko.a@gmail.com)

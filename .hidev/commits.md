@@ -1,7 +1,7 @@
 hiqdev/yii2-combo commits history
 ---------------------------------
 
-## Under development
+## 0.0.1 2016-04-27
 
 - Added basics
     - 12d8367 2016-04-27 inited tests (sol@hiqdev.com)

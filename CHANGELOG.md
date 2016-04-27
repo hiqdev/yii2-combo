@@ -1,11 +1,8 @@
 hiqdev/yii2-combo changelog
-----------------------------
+---------------------------
 
-### CURRENT TODO
+## Under development
 
-- make a release
 
-### 0.1.0 under development
-
-- inited
+## Development started 2015-04-22
 

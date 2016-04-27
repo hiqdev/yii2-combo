@@ -1,0 +1,8 @@
+package:
+    type:           yii2-extension
+    name:           yii2-combo
+    title:          Combo widget for Yii2
+    headline:       Yii2 Combo
+    keywords:       yii2, combo, select2
+    namespace:      hiqdev\combo
+    description:    Select2 with mutual relations

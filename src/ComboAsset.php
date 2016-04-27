@@ -1,30 +1,32 @@
 <?php
-/**
- * @link    http://hiqdev.com/yii2-combo
- * @license http://hiqdev.com/yii2-combo/license
- * @copyright Copyright (c) 2015 HiQDev
+
+/*
+ * Combo widget for Yii2
+ *
+ * @link      https://github.com/hiqdev/yii2-combo
+ * @package   yii2-combo
+ * @license   BSD-3-Clause
+ * @copyright Copyright (c) 2015-2016, HiQDev (http://hiqdev.com/)
  */
 
 namespace hiqdev\combo;
 
 /**
- * Class ComboAsset
- *
- * @package hipanel\combo
+ * Class ComboAsset.
  */
 class ComboAsset extends \yii\web\AssetBundle
 {
     public $sourcePath = '@vendor/hiqdev/yii2-combo/src';
 
     public $js = [
-        'assets/combo.js'
+        'assets/combo.js',
     ];
 
     public $css = [
-        'assets/combo.css'
+        'assets/combo.css',
     ];
 
     public $depends = [
-        'vova07\select2\Select2Asset'
+        'vova07\select2\Select2Asset',
     ];
 }

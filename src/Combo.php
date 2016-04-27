@@ -1,14 +1,18 @@
 <?php
-/**
- * @link    http://hiqdev.com/yii2-combo
- * @license http://hiqdev.com/yii2-combo/license
- * @copyright Copyright (c) 2015 HiQDev
+
+/*
+ * Combo widget for Yii2
+ *
+ * @link      https://github.com/hiqdev/yii2-combo
+ * @package   yii2-combo
+ * @license   BSD-3-Clause
+ * @copyright Copyright (c) 2015-2016, HiQDev (http://hiqdev.com/)
  */
 
 namespace hiqdev\combo;
 
+use Yii;
 use yii\base\Model;
-use yii\base\Object;
 use yii\base\Widget;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
@@ -16,7 +20,6 @@ use yii\helpers\Json;
 use yii\helpers\Url;
 use yii\web\JsExpression;
 use yii\web\View;
-use Yii;
 
 /**
  * Widget Combo.
@@ -154,14 +157,14 @@ class Combo extends Widget
     public $_hasId;
 
     /**
-     * Options that will be passed to the plugin
+     * Options that will be passed to the plugin.
      *
      * @var array
      * @see getPluginOptions()
      */
     public $_pluginOptions = [];
 
-    /** @inheritdoc */
+    /** {@inheritdoc} */
     public function init()
     {
         parent::init();
@@ -275,7 +278,7 @@ class Combo extends Widget
     }
 
     /**
-     * Returns the config of the Combo, merges with the passed $config
+     * Returns the config of the Combo, merges with the passed $config.
      *
      * @param array $options
      * @return array
@@ -302,9 +305,9 @@ class Combo extends Widget
                                 '{$this->primaryFilter}': {format: term}
                             });
                         }
-                    ")
-                ]
-            ]
+                    "),
+                ],
+            ],
         ], $this->_pluginOptions, $options);
     }
 
@@ -326,7 +329,7 @@ class Combo extends Widget
      */
     public function getHasId()
     {
-        return empty($this->_hasId) ? (substr($this->attribute, -3) == '_id') : $this->_hasId;
+        return empty($this->_hasId) ? (substr($this->attribute, -3) === '_id') : $this->_hasId;
     }
 
     /**

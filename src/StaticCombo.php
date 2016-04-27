@@ -1,11 +1,20 @@
 <?php
 
+/*
+ * Combo widget for Yii2
+ *
+ * @link      https://github.com/hiqdev/yii2-combo
+ * @package   yii2-combo
+ * @license   BSD-3-Clause
+ * @copyright Copyright (c) 2015-2016, HiQDev (http://hiqdev.com/)
+ */
+
 namespace hiqdev\combo;
 
 use yii\helpers\ArrayHelper;
 
 /**
- * Class for Static combo
+ * Class for Static combo.
  *
  * @property mixed data
  */
@@ -24,8 +33,8 @@ class StaticCombo extends Combo
 
         return ArrayHelper::merge($options, [
             'select2Options' => [
-                'data' => $this->data
-            ]
+                'data' => $this->data,
+            ],
         ]);
     }
 
@@ -43,7 +52,7 @@ class StaticCombo extends Combo
     public function setData($data)
     {
         $res  = [];
-        $data = (array)$data;
+        $data = (array) $data;
 
         foreach ($data as $key => $value) {
             if ($value instanceof \Closure) {
@@ -55,4 +64,3 @@ class StaticCombo extends Combo
         $this->_data = $res;
     }
 }
-

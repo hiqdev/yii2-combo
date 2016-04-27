@@ -32,13 +32,13 @@ composer.phar
 # phpunit generated files
 coverage.clover
 
-# PHARs
-php-cs-fixer.phar
-phpunit-skelgen.phar
-
 # phpunit itself and local config
 /phpunit.xml
 phpunit.phar
+
+# PHARs
+php-cs-fixer.phar
+phpunit-skelgen.phar
 
 # yii console command
 /yii

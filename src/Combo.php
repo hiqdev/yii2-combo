@@ -90,6 +90,11 @@ class Combo extends Widget
     public $language;
 
     /**
+     * @var bool allow multiple selection
+     */
+    public $multiple;
+
+    /**
      * @var mixed returning arguments
      * Example:
      *
@@ -154,7 +159,7 @@ class Combo extends Widget
      *            false - the combo does not have an id. The value is equal to the id
      *      some string - the name of the id field
      */
-    public $_hasId;
+    protected $_hasId;
 
     /**
      * Options that will be passed to the plugin.
@@ -290,6 +295,7 @@ class Combo extends Widget
             'type' => $this->type,
             'hasId' => $this->hasId,
             'select2Options' => [
+                'multiple'    => $this->multiple,
                 'width'       => '100%',
                 'placeholder' => Yii::t('app', '----------'),
                 'minimumInputLength' => '0',

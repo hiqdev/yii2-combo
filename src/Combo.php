@@ -159,7 +159,7 @@ class Combo extends Widget
      *            false - the combo does not have an id. The value is equal to the id
      *      some string - the name of the id field
      */
-    protected $_hasId;
+    public $_hasId;
 
     /**
      * Options that will be passed to the plugin.

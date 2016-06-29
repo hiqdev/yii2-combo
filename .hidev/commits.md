@@ -1,6 +1,15 @@
 hiqdev/yii2-combo commits history
 ---------------------------------
 
+## dev
+
+
+## 0.0.2 2016-06-29
+
+- Added `multiple` property to Combo
+    - 52d3d10 2016-06-05 Partially reverted ee37ee7: Combo::_hasId changed back from protected to public (d.naumenko.a@gmail.com)
+    - ee37ee7 2016-06-03 + multiple option to Combo (sol@hiqdev.com)
+
 ## 0.0.1 2016-04-27
 
 - Added basics

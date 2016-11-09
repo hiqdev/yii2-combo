@@ -344,102 +344,6 @@
 		this.select2Options = {
 			placeholder: 'Enter a value',
 			allowClear: true,
-			initSelection: function (element, callback) {
-				var text = '';
-				var field = element.data('field');
-				var value = element.val();
-				var isMultiple = field.select2Options.multiple;
-				var callback_trigger = function (data) {
-					var oldData = field.getData();
-					callback(data);
-					field.triggerChange({
-						added: data,
-						removed: oldData,
-						noAffect: true
-					});
-				};
-
-				/// Multiple tagging
-				value = isMultiple ? value.split(',') : [value];
-
-				/// Data preset
-				if (field.select2Options.data) {
-					var data = [];
-					$.each(value, function () {
-						var item_id = this;
-						var item_text = this;
-
-						$.each(field.select2Options.data, function (k, v) {
-							if (v.id == item_id) {
-								item_text = v.text;
-								return false;
-							}
-						});
-						data.push({id: item_id, text: item_text});
-					});
-
-					callback_trigger(isMultiple ? data : data[0]);
-				} else if (field.hasId && element.data('init-text')) {
-					text = element.data('init-text');
-					element.removeData('init-text');
-					callback_trigger({id: value[0], text: text});
-				} else if (!isMultiple && field.hasId) {
-					var requestData = {};
-					if (isMultiple) {
-						requestData[field.getPk() + '_in'] = {format: value};
-					} else {
-						requestData[field.getPk()] = {format: value[0]};
-					}
-					requestData = field.createFilter(requestData);
-
-					$.ajax({
-						url: field.select2Options.ajax.url,
-						method: 'post',
-						data: requestData,
-						beforeSend: function () {
-							var spinner = '<i class="fa fa-circle-o-notch fa-spin"></i>';
-							if (isMultiple) {
-								spinner = $("<li>").addClass('combo-loader select2-search-choice').html(spinner);
-								return field.element.data('select2').container.find('.select2-choices').prepend(spinner);
-							} else {
-								return field.element.data('select2').selection.find(".select2-chosen").html(spinner);
-							}
-						},
-						success: function (data) {
-							var results = [];
-
-							$.each(value, function () { /// For each value find a representative text
-								var item_id = this;
-								var item_text = this;
-
-								$.each(data, function (k, v) {
-									if (v.id == item_id) {
-										item_text = v.text;
-										return false;
-									}
-								});
-								results.push({id: item_id, text: item_text});
-							});
-
-							if (isMultiple) {
-								field.element.data('select2').container.find('.combo-loader').remove();
-								callback_trigger(results);
-							} else {
-								callback_trigger(results[0]);
-							}
-						}
-					});
-				} else if (isMultiple) {
-					var results = [];
-					$.each(value, function (k, v) {
-						results.push({id: field.hasId ? k : v, text: v});
-					});
-					callback_trigger(results);
-				} else {
-					text = value[0];
-					callback_trigger({id: text, text: text});
-				}
-			}
 		};
 
 		/// Ajax defaults
@@ -480,6 +384,109 @@
 			]
 		};
 		this.configure(config);
+
+		this.init = function () {
+			if (this.element.prop('tagName').toLowerCase() !== 'select') {
+				this.select2Options['initSelection'] = function (element, callback) {
+					var text = '';
+					var field = element.data('field');
+					var value = element.val();
+					var isMultiple = field.select2Options.multiple;
+					var callback_trigger = function (data) {
+						var oldData = field.getData();
+						callback(data);
+						field.triggerChange({
+							added: data,
+							removed: oldData,
+							noAffect: true
+						});
+					};
+
+					/// Multiple tagging
+					value = isMultiple ? value.split(',') : [value];
+
+					/// Data preset
+					if (field.select2Options.data) {
+						var data = [];
+						$.each(value, function () {
+							var item_id = this;
+							var item_text = this;
+
+							$.each(field.select2Options.data, function (k, v) {
+								if (v.id == item_id) {
+									item_text = v.text;
+									return false;
+								}
+							});
+							data.push({id: item_id, text: item_text});
+						});
+
+						callback_trigger(isMultiple ? data : data[0]);
+					} else if (field.hasId && element.data('init-text')) {
+						text = element.data('init-text');
+						element.removeData('init-text');
+						callback_trigger({id: value[0], text: text});
+					} else if (!isMultiple && field.hasId) {
+						var requestData = {};
+						if (isMultiple) {
+							requestData[field.getPk() + '_in'] = {format: value};
+						} else {
+							requestData[field.getPk()] = {format: value[0]};
+						}
+						requestData = field.createFilter(requestData);
+
+						$.ajax({
+							url: field.select2Options.ajax.url,
+							method: 'post',
+							data: requestData,
+							beforeSend: function () {
+								var spinner = '<i class="fa fa-circle-o-notch fa-spin"></i>';
+								if (isMultiple) {
+									spinner = $("<li>").addClass('combo-loader select2-search-choice').html(spinner);
+									return field.element.data('select2').container.find('.select2-choices').prepend(spinner);
+								} else {
+									return field.element.data('select2').selection.find(".select2-chosen").html(spinner);
+								}
+							},
+							success: function (data) {
+								var results = [];
+
+								$.each(value, function () { /// For each value find a representative text
+									var item_id = this;
+									var item_text = this;
+
+									$.each(data, function (k, v) {
+										if (v.id == item_id) {
+											item_text = v.text;
+											return false;
+										}
+									});
+									results.push({id: item_id, text: item_text});
+								});
+
+								if (isMultiple) {
+									field.element.data('select2').container.find('.combo-loader').remove();
+									callback_trigger(results);
+								} else {
+									callback_trigger(results[0]);
+								}
+							}
+						});
+					} else if (isMultiple) {
+						var results = [];
+						$.each(value, function (k, v) {
+							results.push({id: field.hasId ? k : v, text: v});
+						});
+						callback_trigger(results);
+					} else {
+						text = value[0];
+						callback_trigger({id: text, text: text});
+					}
+				}
+			}
+
+			return Field.prototype.init.call(this);
+		}
 	}
 
 	Field.prototype = {

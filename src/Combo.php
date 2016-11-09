@@ -196,7 +196,19 @@ class Combo extends Widget
     {
         $this->registerClientConfig();
         $this->registerClientScript();
+        return $this->renderInput();
+    }
+
+    /**
+     * Renders text input that will be used by the plugin.
+     * Must apply [[inputOptions]] to the HTML element.
+     *
+     * @return string
+     */
+    protected function renderInput()
+    {
         return Html::activeTextInput($this->model, $this->attribute, $this->inputOptions);
+
     }
 
     public function registerClientConfig()
@@ -290,12 +302,11 @@ class Combo extends Widget
      */
     public function getPluginOptions($options = [])
     {
-        return ArrayHelper::merge([
+        $options = [
             'name' => $this->name,
             'type' => $this->type,
             'hasId' => $this->hasId,
             'select2Options' => [
-                'multiple'    => $this->multiple,
                 'width'       => '100%',
                 'placeholder' => Yii::t('app', '----------'),
                 'minimumInputLength' => '0',
@@ -314,7 +325,13 @@ class Combo extends Widget
                     "),
                 ],
             ],
-        ], $this->_pluginOptions, $options);
+        ];
+
+        if ($this->multiple !== null) {
+            $options['select2Options']['multiple'] = $this->multiple;
+        }
+
+        return ArrayHelper::merge($options, $this->_pluginOptions, $options);
     }
 
     public function getFormIsBulk()

@@ -302,7 +302,7 @@ class Combo extends Widget
      */
     public function getPluginOptions($options = [])
     {
-        $options = [
+        $defaultOptions = [
             'name' => $this->name,
             'type' => $this->type,
             'hasId' => $this->hasId,
@@ -331,7 +331,7 @@ class Combo extends Widget
             $options['select2Options']['multiple'] = $this->multiple;
         }
 
-        return ArrayHelper::merge($options, $this->_pluginOptions, $options);
+        return ArrayHelper::merge($defaultOptions, $this->_pluginOptions, $options);
     }
 
     public function getFormIsBulk()

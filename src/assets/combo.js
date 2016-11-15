@@ -572,8 +572,8 @@
                     v.format = function (id, text) {
                         return id;
                     };
-                } else if (typeof v.field !== 'string' && (typeof v.format === 'string' || $.isArray(v.format) || typeof v.format === 'object')) {
-                    /// If the result is a static value - just set and skip all below
+                } else if (typeof v.field !== 'string' && (['string', 'number', 'object'].indexOf(typeof v.format) !== -1 || $.isArray(v.format))) {
+                    /// If the result is a static value - just set it and skip all below
                     filters[k] = v.format;
                     return true;
                 } else if ($.isFunction(v.format) == false) {

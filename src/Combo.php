@@ -56,13 +56,13 @@ class Combo extends Widget
      * the type should represent the filter.
      * For example: if the hosting/service combo is extended with filter
      * to show only DB services, the type should be hosting/service/db or hosting/dbService.
-     * The decision of the style depends on overall code style and readability.
+     * The decision of the style depends on overall code style and readability
      */
     public $type;
 
     /**
      * @var string the name of the representative field in the model.
-     * Used by [[getPrimaryFilter]] to create the name of the filtering field.
+     * Used by [[getPrimaryFilter]] to create the name of the filtering field
      * @see getPrimaryFilter()
      */
     public $name;
@@ -147,7 +147,7 @@ class Combo extends Widget
     protected $_filter = [];
 
     /**
-     * @var string the name of the primary filter. Default: [[name]]_like.
+     * @var string the name of the primary filter. Default: [[name]]_like
      * @see getPrimaryFilter
      * @see setPrimaryFilter
      */
@@ -208,7 +208,6 @@ class Combo extends Widget
     protected function renderInput()
     {
         return Html::activeTextInput($this->model, $this->attribute, $this->inputOptions);
-
     }
 
     public function registerClientConfig()

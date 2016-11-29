@@ -56,7 +56,7 @@ class MultipleStaticCombo extends Combo
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     protected function renderInput()
     {

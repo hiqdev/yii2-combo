@@ -19,9 +19,6 @@ Thumbs.db
 # Mac DS_Store Files
 .DS_Store
 
-# php-cs-fixer cache
-.php_cs.cache
-
 # vendor dirs
 vendor
 
@@ -29,16 +26,20 @@ vendor
 composer.lock
 composer.phar
 
+# php-cs-fixer cache
+.php_cs.cache
+
 # phpunit generated files
 coverage.clover
-
-# PHARs
-php-cs-fixer.phar
-phpunit-skelgen.phar
 
 # phpunit itself and local config
 /phpunit.xml
 phpunit.phar
+
+# Binaries
+chkipper.phar
+php-cs-fixer.phar
+phpunit-skelgen.phar
 
 # yii console command
 /yii

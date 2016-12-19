@@ -307,7 +307,7 @@ class Combo extends Widget
             'hasId' => $this->hasId,
             'select2Options' => [
                 'width'       => '100%',
-                'placeholder' => $this->model->getAttributeLabel($this->attribute),
+                'placeholder' => '----------',
                 'minimumInputLength' => '0',
                 'ajax'        => [
                     'url'    => Url::toRoute($this->url),

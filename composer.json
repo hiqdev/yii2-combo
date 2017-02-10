@@ -44,7 +44,7 @@
     ],
     "require": {
         "yiisoft/yii2": "2.*",
-        "vova07/yii2-select2-widget": "*"
+        "hiqdev/yii2-asset-select2": "^4.0"
     },
     "require-dev": {
         "hiqdev/hidev-php": "<2.0",

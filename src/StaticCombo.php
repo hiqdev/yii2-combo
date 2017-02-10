@@ -11,8 +11,6 @@
 
 namespace hiqdev\combo;
 
-use yii\helpers\ArrayHelper;
-
 /**
  * Class for Static combo.
  *
@@ -24,43 +22,18 @@ class StaticCombo extends Combo
 
     public $type = 'default';
 
-    public $_data = [];
+    public $data = [];
 
     public function getPluginOptions($options = [])
     {
         $options = parent::getPluginOptions();
         unset($options['select2Options']['ajax']);
 
-        return ArrayHelper::merge($options, [
-            'select2Options' => [
-                'data' => $this->data,
-            ],
-        ]);
+        return $options;
     }
 
-    /**
-     * @return array
-     */
-    public function getData()
+    protected function getCurrentOptions()
     {
-        return $this->_data;
-    }
-
-    /**
-     * @param array $data
-     */
-    public function setData($data)
-    {
-        $res  = [];
-        $data = (array) $data;
-
-        foreach ($data as $key => $value) {
-            if ($value instanceof \Closure) {
-                $res[] = call_user_func($value, $this);
-            } elseif (!is_array($value)) {
-                $res[] = ['id' => $key, 'text' => $value];
-            }
-        }
-        $this->_data = $res;
+        return $this->data;
     }
 }

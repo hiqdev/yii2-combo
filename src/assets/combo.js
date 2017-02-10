@@ -4,16 +4,14 @@
  * @license http://hiqdev.com/yii2-combo/license
  */
 
-(function ($, window, document, undefined) {
-    var pluginName = "combo",
-        defaults = {};
-
+$.fn.select2.amd.define('select2/combo/plugin', [
+    'jquery'
+], function ($) {
     function Plugin(element, options) {
         this.noextend = 1;
-        this._name = pluginName;
         this.form = $(element);
         this.fields = [];
-        this.settings = $.extend({}, defaults, options);
+        this.settings = $.extend({}, options);
         this.init();
         return this;
     }
@@ -29,14 +27,14 @@
          * @param {string} id the type the field (according to the config storage)
          * @param {object=} [options={}] the additional options that will be passed directly to the select2 config
          * @returns {Plugin}
-         * @see $.fn.comboConfig
+         * @see $.comboConfig
          */
         register: function (element, id, options) {
             options = options !== undefined ? options : {};
             if (typeof element == 'string') {
                 element = this.form.find(element);
             }
-            var field = $.fn.comboConfig().get({
+            var field = $.comboConfig().get({
                 'id': id,
                 'form': this,
                 'select2Options': options,
@@ -48,7 +46,8 @@
                 field: field,
                 element: element
             });
-            this.update(new Event(element, {force: 1}));
+            this.update(new Event(element, {force: true}));
+
             return this;
         },
         setValue: function (type, data) {
@@ -56,9 +55,9 @@
         },
         getData: function (type) {
             var field = this.getField(type);
-            if ($.isEmptyObject(field)) return {};
+            if (field === null) return [];
 
-            return $.extend(true, {}, this.getField(type).getData());
+            return field.getData();
         },
         getId: function (type) {
             var data = this.getData(type);
@@ -78,7 +77,7 @@
             return listeners;
         },
         isSet: function (type) {
-            return this.getId(type).length > 0;
+            return this.getData(type).length > 0;
         },
         disable: function (type, clear) {
             if (clear) this.clear(type);
@@ -97,11 +96,8 @@
         clear: function (type) {
             return this.getField(type).clear();
         },
-        isEmpty: function (type) {
-            return this.getValue(type) == '';
-        },
         getField: function (type) {
-            var result = {};
+            var result = null;
             $.each(this.fields, function (k, v) {
                 if (v.type == type) {
                     result = v.field;
@@ -111,7 +107,7 @@
             return result;
         },
         hasField: function (type) {
-            return !$.isEmptyObject(this.getField(type));
+            return this.getField(type) !== null;
         },
         areSet: function (names, skipMissing) {
             var isSet = true;
@@ -139,25 +135,38 @@
         updateAffected: function (event) {
             var _this = this;
             var updated_field = event.element.data('field');
-            var data = $.extend(true, {}, event.added);
-            if (!updated_field.affects || $.isEmptyObject(data)) return this;
+
+            if (!updated_field.affects) {
+                return this;
+            }
+            if (updated_field.isMultiple()) {
+                console.error('Combo does not support affecting for multi-optional input');
+            }
+
+            var data = updated_field.getData();
+            if ($.isEmptyObject(data)) return this;
+
+            data = data[0];
 
             $.each(updated_field.affects, function (k, v) {
-                var field = _this.getField(k);
-                if ($.isEmptyObject(field)) return true;
-                var keys = {};
+                var field = _this.getField(k),
+                    event = {noAffect: true};
 
-                if (typeof v == 'string') {
-                    keys = {id: v + '_' + field.getPk(), value: v};
+                if ($.isEmptyObject(field) || field.isReadonly()) return true;
+
+                var keys = {};
+                if (typeof v === 'string') {
+                    keys = {
+                        id: field.hasId ? (v + '_' + field.getPk()) : v,
+                        value: v
+                    };
                 } else if ($.isFunction(v)) {
                     keys = v(updated_field);
                 } else {
                     keys = v;
                 }
 
-                var id = data[keys.id];
-                var value = data[keys.value];
-                field.setData({id: id, value: value});
+                field.setData([{id: data[keys.id], text: data[keys.value]}], event);
             });
             return this;
         },
@@ -170,7 +179,7 @@
             var element = event.element;
             var reUpdate = false;
 
-            if (!event.noAffect && (event.added || event.removed)) {
+            if (!event.noAffect) {
                 this.updateAffected(event);
             }
 
@@ -180,9 +189,11 @@
                 var isActive = true;
                 var needsClear = false;
 
-                if (v.element[0] == element[0] && !event.force) return true;
+                if (v.element[0] === element[0] && !event.force) return true;
 
-                if (field.activeWhen) {
+                if (field.isReadonly()) {
+                    isActive = false;
+                } else if (field.activeWhen) {
                     if ($.isFunction(field.activeWhen)) {
                         isActive = field.activeWhen(field.name, _this);
                     } else {
@@ -190,7 +201,7 @@
                     }
                 }
 
-                if (field.clearWhen && !event.noAffect) {
+                if (field.clearWhen && !event.noAffect && !field.isReadonly()) {
                     if ($.isFunction(field.clearWhen)) {
                         needsClear = field.clearWhen(field.name, _this);
                     } else {
@@ -199,17 +210,17 @@
                     needsClear = needsClear || field.clearWhen.indexOf(element.data('field').type) >= 0;
                 }
 
-                if (isActive != _this.isEnabled(field.type) && !_this.isReadonly(field.type)) {
+                if (isActive != _this.isEnabled(field.type) && !field.isReadonly()) {
                     reUpdate = true;
                 }
-                if (needsClear && !_this.isEmpty(field.type)) {
+                if (needsClear && _this.isSet(field.type)) {
                     reUpdate = true;
                 }
 
                 if (isActive) {
                     _this.enable(field.type);
                 } else {
-                    _this.disable(field.type, true);
+                    _this.disable(field.type, !field.isReadonly());
                 }
 
                 if (needsClear) {
@@ -221,87 +232,121 @@
 
             if (reUpdate) return this.update(event);
         }
-    }
-    ;
+    };
 
     function Event(element, options) {
         this.element = element;
         this.options = $.extend(true, {}, options);
-        this.force = options.force;
+        this.force = this.options.force || false;
+        this.noAffect = this.options.noAffect || false;
     }
 
-    $.fn[pluginName] = function (options) {
-        if (!$(this).data("plugin_" + pluginName)) {
-            $(this).data("plugin_" + pluginName, new Plugin(this, options));
+    return Plugin;
+});
+
+$.fn.select2.amd.define('select2/combo/data/hiqAdapter', [
+    'select2/data/ajax',
+    'select2/utils',
+    'jquery'
+], function (AjaxData, Utils, $) {
+    function HiqDataAdapter ($element, options) {
+        HiqDataAdapter.__super__.constructor.call(this, $element, options);
+
+        this._isInitialized = false;
+    }
+
+    Utils.Extend(HiqDataAdapter, AjaxData);
+
+    HiqDataAdapter.prototype.queryDeferred = function (params) {
+        var deferred = $.Deferred();
+
+        this.query(params, function (results) {
+            deferred.resolve(results);
+        });
+
+        return deferred;
+    };
+
+    HiqDataAdapter.prototype.current = function (callback) {
+        if (this._isInitialized) {
+            HiqDataAdapter.__super__.current.call(this, callback);
+
+            return;
         }
 
-        return $(this).data('plugin_' + pluginName);
-    };
-})
-(jQuery, window, document);
+        var self = this,
+            results = [],
+            queryValues = [],
+            element = this.$element,
+            field = element.data('field'),
+            value = element.val(),
+            isMultiple = field.isMultiple(),
+            finalize = function (data) {
+                self._isInitialized = true;
 
-(function ($, window, document, undefined) {
-    /**
-     * The plugin config storage
-     *
-     * @constructor
-     */
-    function Plugin() {
-        this.init();
-    }
+                callback(data);
+            };
 
-    Plugin.prototype = {
-        fields: {},
-        init: function () {
-            return this;
-        },
-        /**
-         * Adds a field behaviors to the config storage.
-         *
-         * @param {string} id the id of the field
-         * @param {object=} config
-         * @returns {*}
-         */
-        add: function (id, config) {
-            return this.fields[id] = config;
-        },
-        /**
-         * Returns the requested config by the type or id, may extend the config with the user-defined
-         * @param {(string|object)} options
-         *    string - returns the stored config for the provided id
-         *    object - have to contain the `type` field with the type of the config
-         * @returns {*}
-         */
-        get: function (options) {
-            if (typeof options == 'string') {
-                options['id'] = options;
-            }
-            if (!options.id && options.type) {
-                options.id = this.findByType(options.type);
-            }
-            return new Field(this.fields[options.id]).configure(options).init();
-        },
-        /**
-         * Checks whether the requested config type is registered
-         * @param {string} type the config type of the select2 field
-         * @returns {boolean}
-         */
-        exists: function (type) {
-            return this.fields[type] !== undefined;
-        },
-        findByType: function (type) {
-            var result = false;
-            $.each(this.field, function (id, options) {
-                if (options.type == type) {
-                    result = id;
-                    return false;
-                }
+        if (!isMultiple && value !== null) {
+            value = [value];
+        }
+        if (!field.isEnabled() && field.isReadonly()) {
+            value = $.map(element.find('option:selected'), function (option) {
+                return option.value;
             });
-            return result;
+        }
+        if (value === null || value.length === 0) {
+            finalize(results);
+            return;
         }
 
+        $.each(value, function (k, v) {
+            if (v !== field.getOption(v).text() || !field.hasId) {
+                results.push({
+                    id: v,
+                    text: field.getOption(v).text()
+                });
+                return true;
+            }
+
+            queryValues.push(v);
+        }.bind(this));
+
+        // Values can not be queried in parallel because
+        // AjaxDataAdapter will terminate previous query immediately
+        // Solution: query one-by-one
+        var queryNextValue = function () {
+            if (queryValues.length === 0) {
+                finalize(results);
+                return;
+            }
+
+            var pk = field.getPk(),
+                filters = {};
+
+            filters[pk] = {format: queryValues.pop()};
+
+            this.queryDeferred({filters: filters}).done(function (values) {
+                $.each(values.results, function (k, item) {
+                    results.push(item);
+                });
+
+                queryNextValue();
+            });
+        }.bind(this);
+
+        queryNextValue();
     };
 
+    return HiqDataAdapter;
+});
+
+$.fn.select2.amd.define('select2/combo/field', [
+    'select2/combo/data/hiqAdapter',
+    'select2/data/tags',
+    'select2/utils',
+    'jquery'
+], function (HiqDataAdapter, Tags, Utils, $) {
     function Field(config) {
         this.id = null;
         this.noextend = 1;
@@ -326,7 +371,7 @@
          *      affects: {
          *          'client': 'client',
          *          'server': function (field) {
-         *              return {id: field.id, value: field.text};
+         *              return {id: field.id, text: field.text};
          *          }
          *      }
          *   }
@@ -343,26 +388,33 @@
 
         this.select2Options = {
             placeholder: 'Enter a value',
-            allowClear: true,
+            allowClear: true
         };
 
         /// Ajax defaults
         if (config.select2Options.ajax) {
-            this.select2Options['ajax'] = {
+            if (config.select2Options.dataAdapter == null) {
+                this.select2Options.dataAdapter = HiqDataAdapter;
+
+                if (config.select2Options.tags) {
+                    this.select2Options.dataAdapter = Utils.Decorate(this.select2Options.dataAdapter, Tags);
+                }
+            }
+            this.select2Options.ajax = {
                 dataType: 'json',
-                quietMillis: 400,
-                results: function (data) {
+                delay: 200,
+                processResults: function (data) {
                     var ret = [];
                     $.each(data, function (k, v) {
                         ret.push(v);
                     });
                     return {results: ret};
                 }
-            }
+            };
         }
 
         this.events = {
-            'change': [
+            'select2:select select2:unselect combo:update': [
                 function (e) {
                     e.element = $(this);
                     if (e.noAffect) {
@@ -371,10 +423,10 @@
                     return $(this).data('field').form.update(e);
                 }
             ],
-            'select2-selecting': [
+            'select2:selecting': [
                 function (event) {
                     var field = $(event.target).data('field');
-                    var data = event.object;
+                    var data = event.params.args.data;
                     if (field.getPk()) {
                         data.id = data[field.getPk()];
                     } else {
@@ -386,105 +438,6 @@
         this.configure(config);
 
         this.init = function () {
-            if (this.element.prop('tagName').toLowerCase() !== 'select') {
-                this.select2Options['initSelection'] = function (element, callback) {
-                    var text = '';
-                    var field = element.data('field');
-                    var value = element.val();
-                    var isMultiple = field.select2Options.multiple;
-                    var callback_trigger = function (data) {
-                        var oldData = field.getData();
-                        callback(data);
-                        field.triggerChange({
-                            added: data,
-                            removed: oldData,
-                            noAffect: true
-                        });
-                    };
-
-                    /// Multiple tagging
-                    value = isMultiple ? value.split(',') : [value];
-
-                    /// Data preset
-                    if (field.select2Options.data) {
-                        var data = [];
-                        $.each(value, function () {
-                            var item_id = this;
-                            var item_text = this;
-
-                            $.each(field.select2Options.data, function (k, v) {
-                                if (v.id == item_id) {
-                                    item_text = v.text;
-                                    return false;
-                                }
-                            });
-                            data.push({id: item_id, text: item_text});
-                        });
-
-                        callback_trigger(isMultiple ? data : data[0]);
-                    } else if (field.hasId && element.data('init-text')) {
-                        text = element.data('init-text');
-                        element.removeData('init-text');
-                        callback_trigger({id: value[0], text: text});
-                    } else if (!isMultiple && field.hasId) {
-                        var requestData = {};
-                        if (isMultiple) {
-                            requestData[field.getPk() + '_in'] = {format: value};
-                        } else {
-                            requestData[field.getPk()] = {format: value[0]};
-                        }
-                        requestData = field.createFilter(requestData);
-
-                        $.ajax({
-                            url: field.select2Options.ajax.url,
-                            method: 'post',
-                            data: requestData,
-                            beforeSend: function () {
-                                var spinner = '<i class="fa fa-circle-o-notch fa-spin"></i>';
-                                if (isMultiple) {
-                                    spinner = $("<li>").addClass('combo-loader select2-search-choice').html(spinner);
-                                    return field.element.data('select2').container.find('.select2-choices').prepend(spinner);
-                                } else {
-                                    return field.element.data('select2').selection.find(".select2-chosen").html(spinner);
-                                }
-                            },
-                            success: function (data) {
-                                var results = [];
-
-                                $.each(value, function () { /// For each value find a representative text
-                                    var item_id = this;
-                                    var item_text = this;
-
-                                    $.each(data, function (k, v) {
-                                        if (v.id == item_id) {
-                                            item_text = v.text;
-                                            return false;
-                                        }
-                                    });
-                                    results.push({id: item_id, text: item_text});
-                                });
-
-                                if (isMultiple) {
-                                    field.element.data('select2').container.find('.combo-loader').remove();
-                                    callback_trigger(results);
-                                } else {
-                                    callback_trigger(results[0]);
-                                }
-                            }
-                        });
-                    } else if (isMultiple) {
-                        var results = [];
-                        $.each(value, function (k, v) {
-                            results.push({id: field.hasId ? k : v, text: v});
-                        });
-                        callback_trigger(results);
-                    } else {
-                        text = value[0];
-                        callback_trigger({id: text, text: text});
-                    }
-                }
-            }
-
             return Field.prototype.init.call(this);
         }
     }
@@ -498,7 +451,8 @@
                     self.attachListener(event, handler);
                 });
             });
-            this.element.select2(this.getSelect2Options());
+            var options = this.getSelect2Options();
+            this.element.select2(options);
 
             return this;
         },
@@ -586,8 +540,15 @@
                     var field = form.getField(v.field);
                     if ($.isEmptyObject(field)) return true;
                     var data = field.getData();
-                    if (!data) return true;
-                    filters[k] = v.format(data['id'], data['text'], field);
+                    if (data.length === 0) return true;
+
+                    filters[k] = $.map(data, function (item) {
+                        return v.format(item.id, item.text, field);
+                    });
+
+                    if (!field.isMultiple()) {
+                        filters[k] = filters[k][0];
+                    }
                 } else {
                     filters[k] = v.format(_this);
                 }
@@ -604,8 +565,8 @@
                         self[k] = v;
                     }
                 } else if (k.substr(0, 2) == 'on') {
-                    var eventName = k.substr(2,1).toLowerCase() + k.substr(3);
-                    if (typeof v !== 'array') {
+                    var eventName = k.substr(2, 1).toLowerCase() + k.substr(3);
+                    if (!$.isArray(v)) {
                         v = [v];
                     }
                     $.each(v, function (k, handler) {
@@ -640,20 +601,52 @@
             return this.element.select2('data');
         },
         setData: function (data, triggerChange) {
-            var setValue;
-            if (typeof data !== 'string') {
-                this.element.data('init-text', data.value);
-                setValue = data.id ? data.id : data.value;
-            } else {
-                setValue = data;
-            }
+            var self = this,
+                values = [];
+            data = data || [];
 
-            this.setValue(setValue, triggerChange);
+            $.each(data, function (k, item) {
+                var value = item.id || item.text;
+                self.ensureOption(value, item.text);
+                values.push(value);
+            });
 
+            this.setValue(values, triggerChange);
             return this;
         },
-        setValue: function (data, triggerChange) {
-            return this.element.select2('val', data, triggerChange);
+        setValue: function (value, triggerChange) {
+            this.element.val(value);
+
+            if (triggerChange) {
+                var event = {'type': 'change'};
+                if (typeof triggerChange === 'object') {
+                    event = $.extend(event, triggerChange);
+                }
+
+                this.element.trigger(event);
+            }
+
+            return true;
+        },
+        ensureOption: function (value, label) {
+            if (value === null || value === undefined) {
+                return true;
+            }
+
+            if (!this.optionExists(value)) {
+                var option = this.buildOption().val(value).text(label || value);
+                this.element.append(option);
+            }
+
+            return true;
+        },
+        optionExists: function (value) {
+            return this.getOption(value).length > 0;
+        },
+        getOption: function (value) {
+            return this.element.find('option').filter(function () {
+                return this.value === value;
+            });
         },
         getValue: function () {
             return this.element.select2('val');
@@ -665,22 +658,25 @@
             return this.element.trigger(event);
         },
         disable: function () {
-            return this.element.select2('enable', false);
+            return this.element.prop('disabled', true);
         },
         enable: function () {
-            return this.element.select2('enable', true);
+            return this.element.prop('disabled', false);
         },
         isEnabled: function () {
-            return this.element.data('select2').isInterfaceEnabled();
+            return this.element.prop('disabled') !== true;
         },
         isReadonly: function () {
             return this.element.attr('readonly');
         },
         clear: function () {
-            return this.setValue('');
+            return this.setValue('', true);
         },
         isEmpty: function () {
             return this.getValue() === '';
+        },
+        isMultiple: function () {
+            return this.element.prop('multiple');
         },
         getPk: function () {
             if (this.hasId === true) {
@@ -691,16 +687,94 @@
                 return false;
             }
         },
-        triggerChange: function (options) {
-            var data = $.extend(true, {
-                'added': this.getData()
-            }, options);
-            return this.element.data('select2').triggerChange(data);
+        buildOption: function() {
+            return $('<option />');
         }
     };
 
-    $.fn['comboConfig'] = function (type) {
-        return new Plugin(type);
+    return Field;
+});
+
+$.fn.select2.amd.define('select2/combo/config', [
+    'select2/combo/field',
+    'jquery'
+], function (Field, $) {
+    /**
+     * The plugin config storage
+     *
+     * @constructor
+     */
+    function Plugin() {
+        this.init();
+    }
+
+    Plugin.prototype = {
+        fields: {},
+        init: function () {
+            return this;
+        },
+        /**
+         * Adds a field behaviors to the config storage.
+         *
+         * @param {string} id the id of the field
+         * @param {object=} config
+         * @returns {*}
+         */
+        add: function (id, config) {
+            return this.fields[id] = config;
+        },
+        /**
+         * Returns the requested config by the type or id, may extend the config with the user-defined
+         * @param {(string|object)} options
+         *    string - returns the stored config for the provided id
+         *    object - have to contain the `type` field with the type of the config
+         * @returns {*}
+         */
+        get: function (options) {
+            if (typeof options == 'string') {
+                options['id'] = options;
+            }
+            if (!options.id && options.type) {
+                options.id = this.findByType(options.type);
+            }
+            return new Field(this.fields[options.id]).configure(options).init();
+        },
+        /**
+         * Checks whether the requested config type is registered
+         * @param {string} type the config type of the select2 field
+         * @returns {boolean}
+         */
+        exists: function (type) {
+            return this.fields[type] !== undefined;
+        },
+        findByType: function (type) {
+            var result = false;
+            $.each(this.field, function (id, options) {
+                if (options.type == type) {
+                    result = id;
+                    return false;
+                }
+            });
+            return result;
+        }
     };
-})
-(jQuery, window, document);
+
+    return Plugin;
+});
+
+(function ($, window, document, undefined) {
+    var Combo = $.fn.select2.amd.require('select2/combo/plugin'),
+        Config = $.fn.select2.amd.require('select2/combo/config');
+
+    $.fn.combo = function (options) {
+        if (!$(this).data('plugin_combo')) {
+            $(this).data('plugin_combo', new Combo(this, options));
+        }
+
+        return $(this).data('plugin_combo');
+    };
+
+    $.comboConfig = function (type) {
+        return new Config(type);
+    };
+})(jQuery, window, document);

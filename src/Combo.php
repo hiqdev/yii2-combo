@@ -95,6 +95,11 @@ class Combo extends Widget
     public $multiple;
 
     /**
+     * @var array
+     */
+    public $current;
+
+    /**
      * @var mixed returning arguments
      * Example:
      *
@@ -155,9 +160,10 @@ class Combo extends Widget
 
     /**
      * @var boolean|string whether the combo has a primary key
-     *   true (default) - the combo has an id in field id
-     *            false - the combo does not have an id. The value is equal to the id
-     *      some string - the name of the id field
+     *   null (default) - decision will be taken automatically.
+     *                    In case when [[attribute]] has the `_id` postfix, this property will be treated as `true`
+     *            false - the combo does not have an id. Meaning the value of the attribute will be used as the ID
+     *           string - the explicit name of the ID attribute
      */
     public $_hasId;
 
@@ -187,8 +193,17 @@ class Combo extends Widget
         if (!$this->inputOptions['id']) {
             $this->inputOptions['id'] = Html::getInputId($this->model, $this->attribute);
         }
+        if ($this->multiple) {
+            $this->inputOptions['multiple'] = true;
+        }
+        if ($this->inputOptions['readonly']) {
+            $this->inputOptions['disabled'] = true;
+        }
         if (!$this->inputOptions['data-combo-field']) {
             $this->inputOptions['data-combo-field'] = $this->name;
+        }
+        if (!isset($this->inputOptions['unselect'])) {
+            $this->inputOptions['unselect'] = null;
         }
     }
 
@@ -207,7 +222,15 @@ class Combo extends Widget
      */
     protected function renderInput()
     {
-        return Html::activeTextInput($this->model, $this->attribute, $this->inputOptions);
+        $html = [];
+        if ($this->inputOptions['readonly']) {
+            $html[] = Html::activeHiddenInput($this->model, $this->attribute, [
+                'id' => $this->inputOptions['id'] . '-hidden',
+            ]);
+        }
+        $html[] = Html::activeDropDownList($this->model, $this->attribute, $this->getCurrentOptions(), $this->inputOptions);
+
+        return implode('', $html);
     }
 
     public function registerClientConfig()
@@ -217,8 +240,7 @@ class Combo extends Widget
 
         $pluginOptions = Json::encode($this->pluginOptions);
         $this->configId = md5($this->type . $pluginOptions);
-        $view->registerJs("$.fn.comboConfig().add('{$this->configId}', $pluginOptions);", View::POS_READY,
-            'combo_' . $this->configId);
+        $view->registerJs("$.comboConfig().add('{$this->configId}', $pluginOptions);", View::POS_READY, 'combo_' . $this->configId);
     }
 
     public function registerClientScript()
@@ -316,19 +338,15 @@ class Combo extends Widget
                     'rename' => $this->rename,
                     'filter' => $this->filter,
                     'data' => new JsExpression("
-                        function (term) {
-                            return $(this).data('field').createFilter({
-                                '{$this->primaryFilter}': {format: term}
-                            });
+                        function (event) {
+                            return $(this).data('field').createFilter($.extend(true, {
+                                '{$this->primaryFilter}': {format: event.term}
+                            }, event.filters || {}));
                         }
                     "),
                 ],
             ],
         ];
-
-        if ($this->multiple !== null) {
-            $options['select2Options']['multiple'] = $this->multiple;
-        }
 
         return ArrayHelper::merge($defaultOptions, $this->_pluginOptions, $options);
     }
@@ -351,7 +369,7 @@ class Combo extends Widget
      */
     public function getHasId()
     {
-        return empty($this->_hasId) ? (substr($this->attribute, -3) === '_id') : $this->_hasId;
+        return $this->_hasId === null ? (substr($this->attribute, -3) === '_id') : $this->_hasId;
     }
 
     /**
@@ -360,5 +378,33 @@ class Combo extends Widget
     public function setHasId($hasId)
     {
         $this->_hasId = $hasId;
+    }
+
+    protected function getCurrentOptions()
+    {
+        $value = Html::getAttributeValue($this->model, $this->attribute);
+
+        if (!isset($value)) {
+            return [];
+        }
+
+        if (!empty($this->current)) {
+            return $this->current;
+        }
+
+        if ($this->getHasId()) {
+            if (!is_scalar($value)) {
+                Yii::error('When Combo has ID, property $current must be set manually, or attribute value must be a scalar. Value ' . var_export($value, true) . ' is not a scalar.', __METHOD__);
+                return [];
+            }
+
+            return [$value => $value];
+        } else {
+            if (is_array($value)) {
+                return array_combine(array_values($value), array_values($value));
+            }
+
+            return [$value => $value];
+        }
     }
 }

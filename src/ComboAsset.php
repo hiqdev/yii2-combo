@@ -11,9 +11,8 @@
 
 namespace hiqdev\combo;
 
-/**
- * Class ComboAsset.
- */
+use hiqdev\yii2\assets\select2\Select2Asset;
+
 class ComboAsset extends \yii\web\AssetBundle
 {
     public $sourcePath = '@vendor/hiqdev/yii2-combo/src/assets';
@@ -27,6 +26,6 @@ class ComboAsset extends \yii\web\AssetBundle
     ];
 
     public $depends = [
-        'vova07\select2\Select2Asset',
+        Select2Asset::class
     ];
 }

@@ -1,6 +1,10 @@
+# hiqdev/yii2-combo
 
-## [Under development]
+## [0.1.0] - 2017-02-10
 
+- Massively refactored to support Select2 v.4
+    - [46512d9] 2017-02-10 Massively refactored to support Select2 v.4 [d.naumenko.a@gmail.com]
+- Implemented different minor enhancements
     - [325e749] 2016-12-19 Fixed combo placeholder [andreyklochok@gmail.com]
     - [41bf1ba] 2016-12-16 Hid label for search fields [andreyklochok@gmail.com]
     - [208ec82] 2016-11-29 csfixed [@hiqsol]
@@ -103,3 +107,5 @@
 [Under development]: https://github.com/hiqdev/yii2-combo/compare/0.0.2...HEAD
 [0.0.2]: https://github.com/hiqdev/yii2-combo/compare/0.0.1...0.0.2
 [0.0.1]: https://github.com/hiqdev/yii2-combo/releases/tag/0.0.1
+[46512d9]: https://github.com/hiqdev/yii2-combo/commit/46512d9
+[0.1.0]: https://github.com/hiqdev/yii2-combo/compare/0.0.2...0.1.0

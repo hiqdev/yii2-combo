@@ -1,5 +1,9 @@
+# hiqdev/yii2-combo
 
-## [Under development]
+## [0.1.0] - 2017-02-10
+
+- Massively refactored to support Select2 v.4 ([d.naumenko.a@gmail.com])
+- Implemented different minor enhancements ([andreyklochok@gmail.com], [@hiqsol], [d.naumenko.a@gmail.com])
 
 ## [0.0.2] - 2016-06-29
 
@@ -18,3 +22,4 @@
 [Under development]: https://github.com/hiqdev/yii2-combo/compare/0.0.2...HEAD
 [0.0.2]: https://github.com/hiqdev/yii2-combo/compare/0.0.1...0.0.2
 [0.0.1]: https://github.com/hiqdev/yii2-combo/releases/tag/0.0.1
+[0.1.0]: https://github.com/hiqdev/yii2-combo/compare/0.0.2...0.1.0

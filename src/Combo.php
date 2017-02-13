@@ -197,6 +197,9 @@ class Combo extends Widget
             $this->inputOptions['multiple'] = true;
         }
         if ($this->inputOptions['readonly']) {
+            // According to the HTML specification, the `select` element does not support
+            // property `readonly`. Solution: render `readonly` field as disabled and prepend hidden
+            // input to submit the attribute value.
             $this->inputOptions['disabled'] = true;
         }
         if (!$this->inputOptions['data-combo-field']) {
@@ -224,6 +227,9 @@ class Combo extends Widget
     {
         $html = [];
         if ($this->inputOptions['readonly']) {
+            // As it was said in comments of `init` method, the `select` element does not support property `readonly`.
+            // However, disabled select will not be submitted.
+            // Solution: render hidden input to submit the attribue value.
             $html[] = Html::activeHiddenInput($this->model, $this->attribute, [
                 'id' => $this->inputOptions['id'] . '-hidden',
             ]);
@@ -379,6 +385,10 @@ class Combo extends Widget
         $this->_hasId = $hasId;
     }
 
+    /**
+     * Method collects list of options that will be rendered inside the `select` tag
+     * @return array
+     */
     protected function getCurrentOptions()
     {
         $value = Html::getAttributeValue($this->model, $this->attribute);

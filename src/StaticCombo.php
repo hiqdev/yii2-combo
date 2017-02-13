@@ -24,6 +24,15 @@ class StaticCombo extends Combo
 
     public $data = [];
 
+    /**
+     * @var bool whether to add an empty option for the select. Works only when [[multiple]] is set to `false`.
+     *
+     * Info: The `select` HTML element selects the first option in the list,
+     * if there is no other option marked as `selected`. This property prevents
+     * this behaviour by adding option with empty value.
+     */
+    public $prependEmptyOption = true;
+
     public function getPluginOptions($options = [])
     {
         $options = parent::getPluginOptions();
@@ -34,6 +43,12 @@ class StaticCombo extends Combo
 
     protected function getCurrentOptions()
     {
-        return $this->data;
+        $option = [];
+
+        if (!$this->multiple && $this->prependEmptyOption === true) {
+            $option = ['' => ''];
+        }
+
+        return $option + $this->data;
     }
 }

@@ -235,7 +235,7 @@ class Combo extends Widget
 
     public function registerClientConfig()
     {
-        $view = Yii::$app->getView();
+        $view = $this->view;
         ComboAsset::register($view);
 
         $pluginOptions = Json::encode($this->pluginOptions);
@@ -248,8 +248,7 @@ class Combo extends Widget
         $selector = $this->inputOptions['id'];
         $js = "$('#$selector').closest('{$this->formElementSelector}').combo().register('#$selector', '$this->configId');";
 
-        $view = Yii::$app->getView();
-        $view->registerJs($js);
+        $this->view->registerJs($js);
     }
 
     public function getReturn()

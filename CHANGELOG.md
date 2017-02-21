@@ -1,5 +1,10 @@
 # hiqdev/yii2-combo
 
+## [Under development]
+
+- Changed Combo behavior to select empty value option on unselect event ([d.naumenko.a@gmail.com])
+- Other minor enhancements ([d.naumenko.a@gmail.com])
+
 ## [0.1.0] - 2017-02-10
 
 - Massively refactored to support Select2 v.4 ([d.naumenko.a@gmail.com])
@@ -19,7 +24,7 @@
 [tafid@hiqdev.com]: https://github.com/tafid
 [@BladeRoot]: https://github.com/BladeRoot
 [bladeroot@hiqdev.com]: https://github.com/BladeRoot
-[Under development]: https://github.com/hiqdev/yii2-combo/compare/0.0.2...HEAD
+[Under development]: https://github.com/hiqdev/yii2-combo/compare/0.1.0...HEAD
 [0.0.2]: https://github.com/hiqdev/yii2-combo/compare/0.0.1...0.0.2
 [0.0.1]: https://github.com/hiqdev/yii2-combo/releases/tag/0.0.1
 [0.1.0]: https://github.com/hiqdev/yii2-combo/compare/0.0.2...0.1.0

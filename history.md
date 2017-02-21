@@ -1,5 +1,13 @@
 # hiqdev/yii2-combo
 
+## [Under development]
+
+- Changed Combo behavior to select empty value option on unselect event
+    - [523c071] 2017-02-21 Combo fixed to react on select2:unselect event [d.naumenko.a@gmail.com]
+    - [d4cc12e] 2017-02-21 Combo::getCurrentOptions() to treat emtpy string as no selection [d.naumenko.a@gmail.com]
+- Other minor enhancements
+    - [7270216] 2017-02-13 Added StaticCombo::prependEmptyOption, enhanced PHPDocs [d.naumenko.a@gmail.com]
+
 ## [0.1.0] - 2017-02-10
 
 - Massively refactored to support Select2 v.4
@@ -104,8 +112,11 @@
 [77a9640]: https://github.com/hiqdev/yii2-combo/commit/77a9640
 [de32f81]: https://github.com/hiqdev/yii2-combo/commit/de32f81
 [f8f2003]: https://github.com/hiqdev/yii2-combo/commit/f8f2003
-[Under development]: https://github.com/hiqdev/yii2-combo/compare/0.0.2...HEAD
+[Under development]: https://github.com/hiqdev/yii2-combo/compare/0.1.0...HEAD
 [0.0.2]: https://github.com/hiqdev/yii2-combo/compare/0.0.1...0.0.2
 [0.0.1]: https://github.com/hiqdev/yii2-combo/releases/tag/0.0.1
 [46512d9]: https://github.com/hiqdev/yii2-combo/commit/46512d9
 [0.1.0]: https://github.com/hiqdev/yii2-combo/compare/0.0.2...0.1.0
+[523c071]: https://github.com/hiqdev/yii2-combo/commit/523c071
+[d4cc12e]: https://github.com/hiqdev/yii2-combo/commit/d4cc12e
+[7270216]: https://github.com/hiqdev/yii2-combo/commit/7270216

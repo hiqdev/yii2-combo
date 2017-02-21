@@ -393,7 +393,7 @@ class Combo extends Widget
     {
         $value = Html::getAttributeValue($this->model, $this->attribute);
 
-        if (!isset($value)) {
+        if (!isset($value) || empty($value)) {
             return [];
         }
 

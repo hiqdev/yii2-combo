@@ -414,6 +414,13 @@ $.fn.select2.amd.define('select2/combo/field', [
         }
 
         this.events = {
+            'select2:unselect': [
+                function (e) {
+                    if (!$(e.target).data('field').isMultiple()) {
+                        $(e.target).data('field').ensureOption('', '');
+                    }
+                }
+            ],
             'select2:select select2:unselect combo:update': [
                 function (e) {
                     e.element = $(this);

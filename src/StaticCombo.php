@@ -49,6 +49,6 @@ class StaticCombo extends Combo
             $option = ['' => ''];
         }
 
-        return $option + $this->data;
+        return $option + (array)$this->data;
     }
 }

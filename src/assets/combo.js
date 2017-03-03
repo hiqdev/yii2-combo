@@ -635,6 +635,13 @@ $.fn.select2.amd.define('select2/combo/field', [
 
             return true;
         },
+        ensureOptions: function (options) {
+            var self = this;
+
+            $.each(options, function () {
+                self.ensureOption(this.id, this.text);
+            });
+        },
         ensureOption: function (value, label) {
             if (value === null || value === undefined) {
                 return true;
@@ -646,6 +653,9 @@ $.fn.select2.amd.define('select2/combo/field', [
             }
 
             return true;
+        },
+        clearOptions: function () {
+            this.element.html('');
         },
         optionExists: function (value) {
             return this.getOption(value).length > 0;

@@ -1,12 +1,15 @@
 # hiqdev/yii2-combo
 
-## [Under development]
+## [0.1.1] - 2017-03-03
 
+- Added `ensureOptions` and `clearOptions` methods
+    - [7d4e31d] 2017-03-03 Added ensureOptions and clearOptions methods [d.naumenko.a@gmail.com]
 - Changed Combo behavior to select empty value option on unselect event
     - [523c071] 2017-02-21 Combo fixed to react on select2:unselect event [d.naumenko.a@gmail.com]
     - [d4cc12e] 2017-02-21 Combo::getCurrentOptions() to treat emtpy string as no selection [d.naumenko.a@gmail.com]
-- Other minor enhancements
+- Other minor enhancements and fixes
     - [7270216] 2017-02-13 Added StaticCombo::prependEmptyOption, enhanced PHPDocs [d.naumenko.a@gmail.com]
+    - [067550a] 2017-02-22 fixed Unsupported operand types in `StaticCombo::getCurrentOptions` [@hiqsol]
 
 ## [0.1.0] - 2017-02-10
 
@@ -120,3 +123,6 @@
 [523c071]: https://github.com/hiqdev/yii2-combo/commit/523c071
 [d4cc12e]: https://github.com/hiqdev/yii2-combo/commit/d4cc12e
 [7270216]: https://github.com/hiqdev/yii2-combo/commit/7270216
+[7d4e31d]: https://github.com/hiqdev/yii2-combo/commit/7d4e31d
+[067550a]: https://github.com/hiqdev/yii2-combo/commit/067550a
+[0.1.1]: https://github.com/hiqdev/yii2-combo/compare/0.1.0...0.1.1

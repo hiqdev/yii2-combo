@@ -1,9 +1,10 @@
 # hiqdev/yii2-combo
 
-## [Under development]
+## [0.1.1] - 2017-03-03
 
+- Added `ensureOptions` and `clearOptions` methods ([d.naumenko.a@gmail.com])
 - Changed Combo behavior to select empty value option on unselect event ([d.naumenko.a@gmail.com])
-- Other minor enhancements ([d.naumenko.a@gmail.com])
+- Other minor enhancements and fixes ([d.naumenko.a@gmail.com], [@hiqsol])
 
 ## [0.1.0] - 2017-02-10
 
@@ -28,3 +29,4 @@
 [0.0.2]: https://github.com/hiqdev/yii2-combo/compare/0.0.1...0.0.2
 [0.0.1]: https://github.com/hiqdev/yii2-combo/releases/tag/0.0.1
 [0.1.0]: https://github.com/hiqdev/yii2-combo/compare/0.0.2...0.1.0
+[0.1.1]: https://github.com/hiqdev/yii2-combo/compare/0.1.0...0.1.1

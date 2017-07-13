@@ -12,14 +12,13 @@
 namespace hiqdev\combo;
 
 use Yii;
-use yii\base\Model;
-use yii\base\Widget;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
 use yii\helpers\Json;
 use yii\helpers\Url;
 use yii\web\JsExpression;
 use yii\web\View;
+use yii\widgets\InputWidget;
 
 /**
  * Widget Combo.
@@ -31,18 +30,8 @@ use yii\web\View;
  * @property mixed $primaryFilter see [[_primaryFilter]]
  * @property mixed hasId
  */
-class Combo extends Widget
+class Combo extends InputWidget
 {
-    /**
-     * @var Model
-     */
-    public $model;
-
-    /**
-     * @var string the attribute name
-     */
-    public $attribute;
-
     /**
      * @var array the url that will be passed to [[Url::to()]] method to create the request URL
      */

@@ -210,9 +210,10 @@ class Combo extends InputWidget
      * Renders text input that will be used by the plugin.
      * Must apply [[inputOptions]] to the HTML element.
      *
+     * @param string $type for compatible reasons. Should not be used
      * @return string
      */
-    protected function renderInput()
+    protected function renderInput($type = null)
     {
         $html = [];
         if ($this->inputOptions['readonly']) {

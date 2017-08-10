@@ -1,5 +1,4 @@
-Yii2 Combo
-==========
+# Yii2 Combo
 
 **Combo widget for Yii2**
 

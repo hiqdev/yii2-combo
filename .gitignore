@@ -1,31 +1,26 @@
 # hidev internals
-.hidev/composer.json
-.hidev/composer.lock
-.hidev/config-local.yml
-.hidev/vendor
+/.hidev/composer.json
+/.hidev/composer.lock
+/.hidev/runtime
+/.hidev/vendor
+
+# local config
+/.env
+/hidev-local.yml
 
 # IDE & OS files
 .*.swp
-
-# IDE project files
+.DS_Store
 .buildpath
 .idea
 .project
 .settings
+Thumbs.db
 nbproject
 
-# windows thumbnail cache
-Thumbs.db
-
-# Mac DS_Store Files
-.DS_Store
-
-# vendor dirs
-vendor
-
-# composer itself and lock file
-composer.lock
-composer.phar
+# composer internals
+/composer.lock
+/vendor
 
 # php-cs-fixer cache
 .php_cs.cache
@@ -33,17 +28,10 @@ composer.phar
 # phpunit generated files
 coverage.clover
 
-# phpunit itself and local config
-/phpunit.xml
-phpunit.phar
-
 # Binaries
 chkipper.phar
+composer.phar
+ocular.phar
 php-cs-fixer.phar
 phpunit-skelgen.phar
-
-# yii console command
-/yii
-
-# composer vendor dir
-/vendor
+phpunit.phar

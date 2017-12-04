@@ -418,6 +418,7 @@ $.fn.select2.amd.define('select2/combo/field', [
                 function (e) {
                     if (!$(e.target).data('field').isMultiple()) {
                         $(e.target).data('field').ensureOption('', '');
+                        $(e.target).data('field').setValue('');
                     }
                 }
             ],

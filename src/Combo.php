@@ -241,7 +241,7 @@ class Combo extends InputWidget
     public function registerClientScript()
     {
         $selector = $this->inputOptions['id'];
-        $js = "$('#$selector').closest('{$this->formElementSelector}').combo().register('#$selector', '$this->configId');";
+        $js = "if ($('#$selector').length > 0) $('#$selector').closest('{$this->formElementSelector}').combo().register('#$selector', '$this->configId');";
 
         $this->view->registerJs($js);
     }

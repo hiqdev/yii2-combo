@@ -10,6 +10,7 @@
 
 namespace hiqdev\combo;
 
+use hiqdev\yii2\assets\select2\Select2SelectAllAsset;
 use Yii;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
@@ -341,6 +342,16 @@ class Combo extends InputWidget
                 ],
             ],
         ];
+        if ($this->multiple) {
+            Select2SelectAllAsset::register($this->view);
+            $defaultOptions = ArrayHelper::merge($defaultOptions, [
+                'select2Options' => [
+                    'tags' => false,
+                    'tokenSeparators' => [',', ', ', ' '],
+                    'dropdownAdapter' => new JsExpression('$.fn.select2.amd.require("select2/custom/dropdown-adapter/select-all")'),
+                ],
+            ]);
+        }
 
         return ArrayHelper::merge($defaultOptions, $this->_pluginOptions, $options);
     }

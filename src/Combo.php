@@ -84,6 +84,11 @@ class Combo extends InputWidget
     public $multiple;
 
     /**
+     * @var bool allow `Select All` button. Only if multiple is true
+     */
+    public $selectAllButton = true;
+
+    /**
      * @var array
      */
     public $current;
@@ -342,7 +347,7 @@ class Combo extends InputWidget
                 ],
             ],
         ];
-        if ($this->multiple) {
+        if ($this->multiple && $this->selectAllButton) {
             Select2SelectAllAsset::register($this->view);
             $defaultOptions = ArrayHelper::merge($defaultOptions, [
                 'select2Options' => [

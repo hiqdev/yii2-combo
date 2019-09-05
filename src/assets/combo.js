@@ -165,9 +165,11 @@ $.fn.select2.amd.define('select2/combo/plugin', [
                 } else {
                     keys = v;
                 }
-
-                field.setData([{id: data[keys.id], text: data[keys.value]}], event);
+                if (data[keys.id] && data[keys.value]) {
+                    field.setData([{id: data[keys.id], text: data[keys.value]}], event);
+                }
             });
+
             return this;
         },
         /**

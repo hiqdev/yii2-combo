@@ -184,19 +184,19 @@ class Combo extends InputWidget
         if (!$this->rename) {
             $this->rename = ['text' => $this->name];
         }
-        if (!$this->inputOptions['id']) {
+        if (empty($this->inputOptions['id'])) {
             $this->inputOptions['id'] = Html::getInputId($this->model, $this->attribute);
         }
         if ($this->multiple) {
             $this->inputOptions['multiple'] = true;
         }
-        if ($this->inputOptions['readonly']) {
+        if (!empty($this->inputOptions['readonly'])) {
             // According to the HTML specification, the `select` element does not support
             // property `readonly`. Solution: render `readonly` field as disabled and prepend hidden
             // input to submit the attribute value.
             $this->inputOptions['disabled'] = true;
         }
-        if (!$this->inputOptions['data-combo-field']) {
+        if (empty($this->inputOptions['data-combo-field'])) {
             $this->inputOptions['data-combo-field'] = $this->name;
         }
         if (!isset($this->inputOptions['unselect'])) {
@@ -221,7 +221,7 @@ class Combo extends InputWidget
     protected function renderInput($type = null)
     {
         $html = [];
-        if ($this->inputOptions['readonly']) {
+        if (!empty($this->inputOptions['readonly'])) {
             // As it was said in comments of `init` method, the `select` element does not support property `readonly`.
             // However, disabled select will not be submitted.
             // Solution: render hidden input to submit the attribue value.
@@ -332,7 +332,7 @@ class Combo extends InputWidget
                 'placeholder' => '----------',
                 'minimumInputLength' => '0',
                 'ajax'        => [
-                    'url'    => Url::toRoute($this->url),
+                    'url'    => Url::toRoute($this->url ?? ''),
                     'type'   => 'post',
                     'return' => $this->return,
                     'rename' => $this->rename,

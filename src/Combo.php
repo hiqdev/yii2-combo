@@ -352,7 +352,7 @@ class Combo extends InputWidget
             $defaultOptions = ArrayHelper::merge([
                 'select2Options' => [
                     'tags' => false,
-                    'tokenSeparators' => [',', ', ', ' '],
+                    'tokenSeparators' => [',', ', '],
                     'dropdownAdapter' => new JsExpression('$.fn.select2.amd.require("select2/custom/dropdown-adapter/select-all")'),
                 ],
             ], $defaultOptions);

@@ -349,13 +349,13 @@ class Combo extends InputWidget
         ];
         if ($this->multiple && $this->selectAllButton) {
             Select2SelectAllAsset::register($this->view);
-            $defaultOptions = ArrayHelper::merge($defaultOptions, [
+            $defaultOptions = ArrayHelper::merge([
                 'select2Options' => [
                     'tags' => false,
                     'tokenSeparators' => [',', ', ', ' '],
                     'dropdownAdapter' => new JsExpression('$.fn.select2.amd.require("select2/custom/dropdown-adapter/select-all")'),
                 ],
-            ]);
+            ], $defaultOptions);
         }
 
         return ArrayHelper::merge($defaultOptions, $this->_pluginOptions, $options);

@@ -169,6 +169,14 @@ class Combo extends InputWidget
      */
     public $_pluginOptions = [];
 
+    /**
+     * Whether this instance was requested as a readonly, display-only combo
+     * (`inputOptions['readonly']` at construction time). Tracked separately
+     * because the `readonly` key itself is removed from `inputOptions` before
+     * rendering - see the note in init() for why.
+     */
+    protected bool $isReadonly = false;
+
     /** {@inheritdoc} */
     public function init()
     {
@@ -190,11 +198,24 @@ class Combo extends InputWidget
         if ($this->multiple) {
             $this->inputOptions['multiple'] = true;
         }
-        if (!empty($this->inputOptions['readonly'])) {
-            // According to the HTML specification, the `select` element does not support
-            // property `readonly`. Solution: render `readonly` field as disabled and prepend hidden
-            // input to submit the attribute value.
-            $this->inputOptions['disabled'] = true;
+        $this->isReadonly = !empty($this->inputOptions['readonly']);
+        if ($this->isReadonly) {
+            // A native `disabled` <select> can't have its text selected/copied
+            // in any browser, and select2 never resolves/shows the current
+            // option's label for a select that's already disabled when
+            // `.select2()` is called on it. Keep the select enabled instead so
+            // select2 initializes and resolves the label normally, and drop the
+            // `readonly` attribute too - yii2-combo's own client-side form
+            // handler (combo.js `update()`) auto-disables any field with a
+            // `readonly` attribute, which would undo this. Interaction is
+            // blocked in JS instead, see registerClientScript(). The hidden
+            // input rendered by renderInput() still carries the real value
+            // under the real attribute name, so the visible select gets a
+            // throwaway name to avoid submitting a second, conflicting value.
+            unset($this->inputOptions['readonly']);
+            $this->inputOptions['disabled'] = false;
+            $this->inputOptions['name'] = $this->inputOptions['id'] . '-display';
+            $this->inputOptions['tabindex'] = -1;
         }
         if (empty($this->inputOptions['data-combo-field'])) {
             $this->inputOptions['data-combo-field'] = $this->name;
@@ -221,10 +242,10 @@ class Combo extends InputWidget
     protected function renderInput($type = null)
     {
         $html = [];
-        if (!empty($this->inputOptions['readonly'])) {
-            // As it was said in comments of `init` method, the `select` element does not support property `readonly`.
-            // However, disabled select will not be submitted.
-            // Solution: render hidden input to submit the attribue value.
+        if ($this->isReadonly) {
+            // The visible select now gets a throwaway name (see init()), so
+            // render a hidden input under the real attribute name to submit
+            // the actual value.
             $html[] = Html::activeHiddenInput($this->model, $this->attribute, [
                 'id' => $this->inputOptions['id'] . '-hidden',
             ]);
@@ -250,6 +271,31 @@ class Combo extends InputWidget
         $js = "if ($('#$selector').length > 0) $('#$selector').closest('{$this->formElementSelector}').combo().register('#$selector', '$this->configId');";
 
         $this->view->registerJs($js);
+
+        if ($this->isReadonly) {
+            $this->registerReadonlyClientScript($selector);
+        }
+    }
+
+    /**
+     * Blocks interaction on a readonly combo while keeping it a normal,
+     * enabled select2 (see init()) so its current value stays selectable and
+     * copyable, unlike a native `disabled` <select>.
+     *
+     * @param string $id the input id (may start with a digit, e.g. a
+     *   tabular-input group key - not valid as a bare CSS `#id` selector, so
+     *   an attribute selector is used for the CSS rules below instead)
+     */
+    protected function registerReadonlyClientScript($id)
+    {
+        $this->view->registerJs(
+            "jQuery('#$id').on('select2:opening select2:unselecting', function (e) { e.preventDefault(); });",
+            View::POS_READY
+        );
+        $this->view->registerCss(
+            "[id=\"$id\"] + .select2-container .select2-selection__rendered { -webkit-user-select: text !important; user-select: text !important; }\n" .
+            "[id=\"$id\"] + .select2-container .select2-selection { background-color: #eee; cursor: default; }"
+        );
     }
 
     public function getReturn()

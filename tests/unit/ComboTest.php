@@ -20,7 +20,7 @@ class ComboTest extends \PHPUnit\Framework\TestCase
      */
     protected $object;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->object = Yii::createObject([
             'class'         => Combo::class,
@@ -31,7 +31,7 @@ class ComboTest extends \PHPUnit\Framework\TestCase
         ]);
     }
 
-    protected function tearDown()
+    protected function tearDown(): void
     {
     }
 

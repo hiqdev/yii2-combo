@@ -24,7 +24,7 @@ class StaticComboTest extends \PHPUnit\Framework\TestCase
         'test' => 'test',
     ];
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->object = Yii::createObject([
             'class' => StaticCombo::class,
@@ -35,7 +35,7 @@ class StaticComboTest extends \PHPUnit\Framework\TestCase
         ]);
     }
 
-    protected function tearDown()
+    protected function tearDown(): void
     {
     }
 

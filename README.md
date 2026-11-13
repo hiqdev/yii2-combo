@@ -4,9 +4,6 @@
 
 [![Latest Stable Version](https://poser.pugx.org/hiqdev/yii2-combo/v/stable)](https://packagist.org/packages/hiqdev/yii2-combo)
 [![Total Downloads](https://poser.pugx.org/hiqdev/yii2-combo/downloads)](https://packagist.org/packages/hiqdev/yii2-combo)
-[![Build Status](https://img.shields.io/travis/hiqdev/yii2-combo.svg)](https://travis-ci.org/hiqdev/yii2-combo)
-[![Scrutinizer Code Coverage](https://img.shields.io/scrutinizer/coverage/g/hiqdev/yii2-combo.svg)](https://scrutinizer-ci.com/g/hiqdev/yii2-combo/)
-[![Scrutinizer Code Quality](https://img.shields.io/scrutinizer/g/hiqdev/yii2-combo.svg)](https://scrutinizer-ci.com/g/hiqdev/yii2-combo/)
 [![Dependency Status](https://www.versioneye.com/php/hiqdev:yii2-combo/dev-master/badge.svg)](https://www.versioneye.com/php/hiqdev:yii2-combo/dev-master)
 
 Select2 with mutual relations

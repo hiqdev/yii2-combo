@@ -47,8 +47,7 @@
         "hiqdev/yii2-asset-select2": "^4.0"
     },
     "require-dev": {
-        "hiqdev/hidev-php": "<2.0",
-        "hiqdev/hidev-hiqdev": "*"
+        "phpunit/phpunit": "^11.5"
     },
     "autoload": {
         "psr-4": {
@@ -60,5 +59,10 @@
             "type": "composer",
             "url": "https://asset-packagist.org"
         }
-    ]
+    ],
+    "config": {
+        "allow-plugins": {
+            "yiisoft/yii2-composer": true
+        }
+    }
 }
